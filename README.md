@@ -1,2 +1,2 @@
-# project-generator
-um script gerador de projetos
+# project generator
+um script que gera projetos cmake
