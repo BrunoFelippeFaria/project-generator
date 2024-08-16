@@ -1,28 +1,29 @@
 #!/usr/bin/env python3
-
 import os
 import json
 from subprocess import run
 from sys import argv
-from txts import * 
-
 
 def criarArquivo(arquivo, conteudo):
     with open(arquivo, "w") as arq:
         arq.write(conteudo)
+
+def lerArquivo(arquivo):
+    script_dir = os.path.dirname(os.path.realpath(__file__))
+    caminho = os.path.join(script_dir, arquivo)
+    with open(caminho, "r") as arq:
+        return arq.read()
 
 opc = argv[1]
 
 print("inicio")
 
 if opc == "qt6":
-    print("gerando projeto qt")
-    criarArquivo("CMakeLists.txt", qt6_CMakeLists)
+    criarArquivo("CMakeLists.txt", lerArquivo("txts/qt6_CMakeLists"))
     if not os.path.exists("build"):
-        #cria a pasta build
+        #cria a estrutura base
         os.mkdir("build")
-        #cria o arquivo main
-        criarArquivo("main.cpp", base_main_cpp)
+        criarArquivo("main.cpp", lerArquivo("txts/qt6_main_cpp"))
         #roda o cmake
         run(["cmake", ".."], cwd="build")
         run(["make"], cwd="build")
@@ -37,9 +38,12 @@ if opc == "qt6":
     
     with open("build/compile_commands.json", "w") as compileComands:
         json.dump(data, compileComands, indent=2)
+    
+    print("projeto qt6 gerado")
 
 elif opc == "cmake":
     print("gerando arquivo cmake...")
-    criarArquivo("CMakeLists.txt", base_CMakeLists)
+    criarArquivo("CMakeLists.txt", lerArquivo("txts/base_CMakeLists"))
+    print("arquivo cmake gerado")
 
 exit(0)
